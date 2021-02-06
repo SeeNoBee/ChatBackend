@@ -1,0 +1,25 @@
+version: '3'
+services:
+  # server - просто название одного из сервисов
+  # имена для сервисов задаем самостоятельно
+  server:
+    build: .
+    container_name: main-app
+    ports:
+      - "8000:8000"
+    command: sh -c "cd /NapoleonIT_Backend
+             && alembic upgrade head
+             && python -u main.py"
+    env_file:
+      - .env
+    # сервис сервер не запустится, пока сервис database не запустится
+    depends_on:
+      - database
+    restart: always
+
+  # сервис для базы данных
+  database:
+    image: postgres
+    container_name: main-db
+    env_file:
+       - .env
